@@ -41,14 +41,12 @@ import java.util.List;
 /**
  * Class of utilities
  * 
- * @author Laurent Payen
- *
  */
 public final class Utilities
 {
+    private static DateTimeFormatter _date_formatter;
 
-    public static final String FORMAT_DATE = "dd/MM/yyyy";
-    private static DateTimeFormatter _formatter = DateTimeFormatter.ofPattern( FORMAT_DATE );
+    private static DateTimeFormatter _time_formatter;
 
     /**
      * Private constructor - this class does not need to be instantiated
@@ -58,13 +56,32 @@ public final class Utilities
     }
 
     /**
-     * Getter for the formatter
+     * Getter for the date formatter
      * 
      * @return the formatter
      */
-    public static DateTimeFormatter getFormatter( )
+    public static DateTimeFormatter getDateFormatter( )
     {
-        return _formatter;
+        if( _date_formatter == null )
+        {
+           // _formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).withLocale( AppointmentPlugin.getPluginLocale() );
+            _date_formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+        }
+        return _date_formatter;
+    }
+
+    /**
+     * Getter for the time formatter
+     *
+     * @return the formatter
+     */
+    public static DateTimeFormatter getTimeFormatter( )
+    {
+        if( _time_formatter == null )
+        {
+            _time_formatter = DateTimeFormatter.ISO_LOCAL_TIME;
+        }
+        return _time_formatter;
     }
 
     /**
@@ -72,11 +89,31 @@ public final class Utilities
      * 
      * @param formatter
      *            the formatter to set
+     * @deprecated Useless setter
      */
+    @Deprecated
     public static void setFormatter( DateTimeFormatter formatter )
     {
-        _formatter = formatter;
+        _date_formatter = formatter;
     }
+
+    /**
+     * Reset formatter scope package to be only used by unit tests
+     */
+    static void resetDateFormatter()
+    {
+        _date_formatter = null;
+    }
+
+
+    /**
+     * Reset formatter scope package to be only used by unit tests
+     */
+    static void resetTimeFormatter()
+    {
+        _time_formatter = null;
+    }
+
 
     /**
      * Return the closest date in past a list of date with the given date
@@ -108,3 +145,4 @@ public final class Utilities
     }
 
 }
+

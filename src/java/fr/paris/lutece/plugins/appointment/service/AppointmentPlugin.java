@@ -33,19 +33,17 @@
  */
 package fr.paris.lutece.plugins.appointment.service;
 
-import java.text.DateFormat;
 import java.util.Locale;
 
 import org.apache.commons.beanutils.BeanUtilsBean;
-import org.dozer.converters.DateConverter;
 
 import fr.paris.lutece.portal.service.plugin.Plugin;
 import fr.paris.lutece.portal.service.plugin.PluginService;
+import fr.paris.lutece.portal.web.l10n.LocaleService;
+import org.apache.commons.beanutils.converters.DateConverter;
 
 /**
  * Appointment plugin
- * 
- * @author Laurent Payen
  * 
  */
 public final class AppointmentPlugin extends Plugin
@@ -54,6 +52,8 @@ public final class AppointmentPlugin extends Plugin
      * Name of the appointment plugin
      */
     public static final String PLUGIN_NAME = "appointment";
+    
+    private static Locale _pluginLocale;
 
     /**
      * {@inheritDoc}
@@ -61,8 +61,10 @@ public final class AppointmentPlugin extends Plugin
     @Override
     public void init( )
     {
-        BeanUtilsBean.getInstance( ).getConvertUtils( )
-                .register( new DateConverter( DateFormat.getDateInstance( DateFormat.SHORT, getPluginLocale( Locale.FRANCE ) ) ), java.sql.Date.class );
+        String isoDatePattern = "yyyy-MM-dd";
+        DateConverter converter = new org.apache.commons.beanutils.converters.DateConverter( );
+        converter.setPattern( isoDatePattern );
+        BeanUtilsBean.getInstance( ).getConvertUtils( ).register( converter, java.sql.Date.class );
     }
 
     /**
@@ -72,10 +74,36 @@ public final class AppointmentPlugin extends Plugin
      *            The locale preferred by the user
      * @return The locale used by this plugin
      */
+    @Deprecated
     public static Locale getPluginLocale( Locale locale )
     {
-        return Locale.FRANCE;
+        return getPluginLocale();
     }
+ 
+    /**
+     * Get the locale used by this plugin
+     * 
+     * @return The locale used by this plugin
+     */
+    public static Locale getPluginLocale()
+    {
+        if( _pluginLocale != null )
+        {
+            return _pluginLocale;
+        }
+        return LocaleService.getDefault();
+    }
+    
+    /**
+     * Set the plugin locale (used for unit tests)
+     * @param locale The locale
+     */
+    public static void setPluginLocale( Locale locale )
+    {
+        _pluginLocale = locale;
+    }
+     
+    
     /**
      * Get the appointment plugin
      * 
